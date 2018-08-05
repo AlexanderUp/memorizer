@@ -1,8 +1,24 @@
 # :kivy 1.0.9
 
 <Memorizer>:
-    Label:
-        font_size: 70
-        center_x: root.width / 2
-        top: root.top - 50
-        text: "Memorize this number:"
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            font_size: 70
+            size_hint_y: 30
+            center_x: root.width / 2
+            text: "Memorize this number:"
+
+        Label:
+            id: number
+            font_size: 100
+            size_hint_y: 40
+            center_x: root.width / 2
+            text: 'Number'
+
+        Label:
+            id: time_left
+            font_size: 70
+            size_hint_y: 30
+            center_x: root.width / 2
+            text: 'Time left'
