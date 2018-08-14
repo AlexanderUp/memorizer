@@ -14,17 +14,16 @@ import random
 
 
 # count = 10
-count = 3
-# scr = NumericProperty(0)
+count = 2
 
 class MemoScreen(Screen):
 
-    # scr = BooleanProperty(False)
-    scr = NumericProperty(0)
+    scr = BooleanProperty(False)
+
+    def number(self):
+        return random.randint(100000, 999999)
 
     def time_left(self, *kwargs):
-        # nonlocal scr
-        # global scr
         global count
         time_ = str(count) + ' secs left'
         if count:
@@ -32,20 +31,16 @@ class MemoScreen(Screen):
             print('count decreased!')
         else:
             time_ = 'Time is over!'
-            # Clock.unschedule(self.time_left)
+            Clock.unschedule(self.time_left)
             print('Unscheduled!')
-            # sm.current = 'Check'
-            # print('BooleanProperty before: {}'.format(scr))
-            # scr = True
-            # repr(scr)
-            print('NumericProperty before: {}'.format(self.scr))
-            self.scr = 1
+            print('BooleanProperty before: {}'.format(self.scr))
+            self.scr = True
             print('BooleanProperty: {}'.format(self.scr))
+        # return time_
         self.ids.time_left.text = time_
-        return None # ????
-
-    def number(self):
-        return random.randint(100000, 999999)
+        print('self.ids... {}'.format(self.ids.time_left.text))
+        # # return None # ????
+        return self.ids.time_left.text
 
     def on_scr(self, *kwargs):
         print('on_scr called!')
@@ -58,18 +53,15 @@ class MemoScreen(Screen):
 class CheckScreen(Screen):
     pass
 
-
 class MemorizerApp(App):
 
     def build(self):
         self.title = 'Memorizer'
-        # memorizer = MemoScreen()
-        # Clock.schedule_interval(memorizer.time_left, 1.0)
-        # return memorizer
         sm = ScreenManager()
         sm.add_widget(MemoScreen(name='MemoScr'))
         sm.add_widget(CheckScreen(name='CheckScr'))
-        # Clock.schedule_interval(memorizer.time_left, 1.0)
+        memo = MemoScreen()
+        Clock.schedule_interval(memo.time_left, 1.0)
         return sm
 
 
