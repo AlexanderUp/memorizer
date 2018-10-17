@@ -3,55 +3,69 @@
 
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
 from kivy.clock import Clock
 from kivy.uix.screenmanager import ScreenManager
 from kivy.uix.screenmanager import Screen
-from kivy.properties import BooleanProperty
-from kivy.properties import NumericProperty
+# from kivy.properties import BooleanProperty
+# from kivy.properties import StringProperty
 
 
 import random
 
 
 # count = 10
-count = 2
+count = 3
 
-class MemoScreen(Screen):
+class CustomLayout(BoxLayout):
 
-    scr = BooleanProperty(False)
+    def __init__(self, *args, **kwargs):
+        print('CustomLayout.__init__:')
+        print('Args recieved: {}'.format(args))
+        print('Kwargs recieved: {}'.format(kwargs))
+        super(CustomLayout, self).__init__(**kwargs)
+        self.orientation = 'vertical'
+        self.add_widget(Label(text='Memorize this number:', font_size=70, size_hint=(1, 0.33)))
+        self.add_widget(Label(text=str(self.number()), font_size=70, size_hint=(1, 0.33)))
+        self.time_widget = Label(text='Countdowning commenced!', font_size=70, size_hint=(1, 0.33))
+        self.add_widget(self.time_widget)
+        print('self dict:')
+        for d in self.__dict__.keys():
+            print('{}: {}'.format(d, self.__dict__[d]))
+        Clock.schedule_interval(self.time_left, 1.0)
+
 
     def number(self):
         return random.randint(100000, 999999)
 
-    def time_left(self, *kwargs):
+    def time_left(self, *args, **kwargs):
+        print('MemoScreen.time_left:')
+        print('Args recieved: {}'.format(args))
+        print('Kwargs recieved: {}'.format(kwargs))
         global count
-        time_ = str(count) + ' secs left'
+        print('time_var: {}'.format(count))
         if count:
+            self.time_widget.text = '{} secs left'.format(count)
             count -= 1
-            print('count decreased!')
         else:
-            time_ = 'Time is over!'
+            self.time_widget.text = 'Time is over!'
             Clock.unschedule(self.time_left)
-            print('Unscheduled!')
-            print('BooleanProperty before: {}'.format(self.scr))
-            self.scr = True
-            print('BooleanProperty: {}'.format(self.scr))
-        # return time_
-        self.ids.time_left.text = time_
-        print('self.ids... {}'.format(self.ids.time_left.text))
-        # # return None # ????
-        return self.ids.time_left.text
+            print('Time is over!')
 
-    def on_scr(self, *kwargs):
-        print('on_scr called!')
-        print('*kwargs: {}'.format(kwargs))
-        # return sm.current('Check')
-        # check = CheckScreen()
-        # return check
+
+class MemoScreen(Screen):
+
+    def __init__(self, *args, **kwargs):
+        print('MemoScreen.__init__:')
+        print('Args recieved: {}'.format(args))
+        print('Kwargs recieved: {}'.format(kwargs))
+        super(MemoScreen, self).__init__(**kwargs)
+        self.add_widget(CustomLayout())
 
 
 class CheckScreen(Screen):
     pass
+
 
 class MemorizerApp(App):
 
@@ -60,10 +74,7 @@ class MemorizerApp(App):
         sm = ScreenManager()
         sm.add_widget(MemoScreen(name='MemoScr'))
         sm.add_widget(CheckScreen(name='CheckScr'))
-        memo = MemoScreen()
-        Clock.schedule_interval(memo.time_left, 1.0)
         return sm
-
 
 
 if __name__ == '__main__':
